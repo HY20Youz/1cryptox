@@ -40,7 +40,7 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app"
+    "start": "nodemon -e js app.js"
   },
   "keywords": [],
   "author": "",
