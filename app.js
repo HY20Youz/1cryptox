@@ -260,11 +260,16 @@ start();
 const shutdown = (signal) => {
   console.log(`${signal} received, shutting down...`);
   server.close(() => {
-    mongoose.connection.close(false, () => process.exit(0));
+    // الكود القديم الذي يسبب المشكلة
+    // mongoose.connection.close(false, () => process.exit(0)); 
+    
+    // الحل الجديد المتوافق مع Mongoose 8
+    mongoose.connection.close().then(() => {
+      console.log('MongoDB connection closed.');
+      process.exit(0);
+    }).catch((err) => {
+      console.error('Error closing MongoDB:', err);
+      process.exit(1);
+    });
   });
 };
-['SIGINT','SIGTERM'].forEach(sig => process.on(sig, () => shutdown(sig)));
-process.on('uncaughtException', err => { console.error(err); process.exit(1); });
-process.on('unhandledRejection', err => { console.error(err); process.exit(1); });
-
-module.exports = { io };
